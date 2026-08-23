@@ -1,0 +1,19 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+
+# Logs & temp files
+*.log
+r6_tracker.log
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+[dD]esktop.ini
+$RECYCLE.BIN/
+.DS_Store

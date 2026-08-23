@@ -1,0 +1,15 @@
+[package]
+name = "r6_tracker"
+version = "0.1.0"
+edition = "2021"
+description = "Wrapper invisible pour tracker Rainbow Six Siege sur Hydra Launcher"
+
+[dependencies]
+sysinfo = "0.33"
+
+[profile.release]
+opt-level = "z"     # Optimise pour une taille de binaire minimale
+lto = true          # Link Time Optimization
+codegen-units = 1   # Meilleure optimisation globale
+panic = "abort"     # Réduit l'overhead
+strip = true        # Retire les symboles de debug
