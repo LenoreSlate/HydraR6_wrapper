@@ -153,3 +153,36 @@ fn main() {
     }
     log("=== R6 Tracker Exited ===");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn recognizes_known_game_process_names() {
+        assert!(is_target_process("RainbowSix.exe"));
+        assert!(is_target_process("RainbowSix_Vulkan.exe"));
+        assert!(is_target_process("RainbowSix_DX11.exe"));
+        assert!(is_target_process("RainbowSix_BE.exe"));
+        assert!(is_target_process("RainbowSixHelper.exe"));
+    }
+
+    #[test]
+    fn is_case_insensitive() {
+        assert!(is_target_process("rainbowsix.exe"));
+        assert!(is_target_process("RAINBOWSIX.EXE"));
+    }
+
+    #[test]
+    fn rejects_unrelated_process_names() {
+        assert!(!is_target_process("notepad.exe"));
+        assert!(!is_target_process("steam.exe"));
+        assert!(!is_target_process(""));
+    }
+
+    #[test]
+    fn excludes_its_own_binary() {
+        assert!(!is_target_process("r6_tracker.exe"));
+        assert!(!is_target_process("R6_Tracker.exe"));
+    }
+}
