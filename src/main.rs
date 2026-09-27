@@ -68,7 +68,8 @@ fn count_game_processes(system: &mut System) -> usize {
     }).count()
 }
 
-fn launch_game() {
+/// Retourne `false` si la commande de lancement n'a pas pu être exécutée.
+fn launch_game() -> bool {
     // Un argument vide ou composé d'espaces est ignoré : sinon `"".chars().all(..)` vaut true
     // et produirait l'URI invalide `uplay://launch//0`.
     let launch_target = std::env::args()
@@ -91,12 +92,21 @@ fn launch_game() {
     #[cfg(windows)]
     cmd.creation_flags(CREATE_NO_WINDOW);
 
-    let _ = cmd.spawn();
+    match cmd.spawn() {
+        Ok(_) => true,
+        Err(e) => {
+            log(&format!("Failed to spawn launch command: {}", e));
+            false
+        }
+    }
 }
 
 fn main() {
     log("=== R6 Tracker Started ===");
-    launch_game();
+    if !launch_game() {
+        log("=== R6 Tracker Exited (launch failed) ===");
+        return;
+    }
 
     let mut system = System::new();
 
