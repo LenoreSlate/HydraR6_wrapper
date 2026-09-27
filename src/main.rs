@@ -69,13 +69,20 @@ fn count_game_processes(system: &mut System) -> usize {
 }
 
 fn launch_game() {
-    let launch_target = std::env::args().nth(1).map(|arg| {
-        if arg.chars().all(|c| c.is_ascii_digit()) {
-            format!("uplay://launch/{}/0", arg)
-        } else {
-            arg
-        }
-    }).unwrap_or_else(|| DEFAULT_LAUNCH_URI.to_string());
+    // Un argument vide ou composé d'espaces est ignoré : sinon `"".chars().all(..)` vaut true
+    // et produirait l'URI invalide `uplay://launch//0`.
+    let launch_target = std::env::args()
+        .nth(1)
+        .map(|arg| arg.trim().to_string())
+        .filter(|arg| !arg.is_empty())
+        .map(|arg| {
+            if arg.chars().all(|c| c.is_ascii_digit()) {
+                format!("uplay://launch/{}/0", arg)
+            } else {
+                arg
+            }
+        })
+        .unwrap_or_else(|| DEFAULT_LAUNCH_URI.to_string());
 
     log(&format!("Launching target: {}", launch_target));
 
